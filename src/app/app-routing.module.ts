@@ -1,13 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { authGuard } from './auth/auth.guard';
 import { AuthComponent } from './auth/auth.component';
+import { MainComponent } from './main/main.component';
 
 const routes: Routes = [
   {
     path: 'auth',
     component: AuthComponent,
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: '',
+    component: MainComponent,
+    loadChildren: () => import('./main/main.module').then(m => m.MainModule)
   },
   {
     path: '**',
