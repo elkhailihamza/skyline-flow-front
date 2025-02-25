@@ -8,6 +8,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { authInterceptor } from './auth/auth.interceptor';
 import { CommonModule } from '@angular/common';
 import { httpInterceptor } from './http.interceptor';
+import { AuthComponent } from './auth/auth.component';
 
 export const fetchToken = () => {
   return localStorage.getItem('token');
@@ -16,12 +17,12 @@ export const fetchToken = () => {
 @NgModule({
   declarations: [
     AppComponent,
+    AuthComponent
   ],
   imports: [
     CommonModule,
     BrowserModule,
     AppRoutingModule,
-    RouterModule,
     HttpClientModule,
     JwtModule.forRoot({
       config: {

@@ -8,6 +8,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { AuthService } from './auth.service';
 import { RefreshComponent } from './refresh/refresh.component';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { AuthComponent } from './auth.component';
 
 @NgModule({
   declarations: [
