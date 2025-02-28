@@ -1,0 +1,110 @@
+<nav class="px-4">
+  <div
+    class="p-2 grid grid-rows-1 grid-cols-[1fr_4fr_1fr] place-items-center w-full"
+  >
+    <div class="p-1">
+      <a routerLink="/" class="cursor-pointer">
+        <img
+          src="assets/public/skyflow_logo.svg"
+          alt="Custom Logo"
+          class="logo"
+        />
+      </a>
+    </div>
+    <form
+      [formGroup]="searchBarNav"
+      (ngSubmit)="onSubmit()"
+      class="p-1 w-1/2 grid grid-rows-1 grid-cols-[auto_4em] place-items-center"
+    >
+      <div class="relative w-full min-w-[100px]">
+        <input
+          formControlName="search"
+          (focus)="onSearch()"
+          (blur)="offSearch()"
+          type="text"
+          [ngClass]="{ 'pl-14': isFocused || hasInput() }"
+          class="p-[0.5em] pl-4 outline-none border border-[#0D1321] border-r-none rounded-s-full w-full min-w-[100px]"
+          placeholder="Search.."
+        />
+        <span
+          *ngIf="isFocused || hasInput()"
+          class="absolute pr-1.5 left-5 top-1/2 -translate-y-1/2 transition-all border-r-2 border-stone-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            width="22"
+            height="22"
+            viewBox="0 0 50 50"
+          >
+            <path
+              d="M 21 3 C 11.621094 3 4 10.621094 4 20 C 4 29.378906 11.621094 37 21 37 C 24.710938 37 28.140625 35.804688 30.9375 33.78125 L 44.09375 46.90625 L 46.90625 44.09375 L 33.90625 31.0625 C 36.460938 28.085938 38 24.222656 38 20 C 38 10.621094 30.378906 3 21 3 Z M 21 5 C 29.296875 5 36 11.703125 36 20 C 36 28.296875 29.296875 35 21 35 C 12.703125 35 6 28.296875 6 20 C 6 11.703125 12.703125 5 21 5 Z"
+            ></path>
+          </svg>
+        </span>
+        <span
+          *ngIf="hasInput()"
+          (click)="cancelSearch($event)"
+          class="absolute cursor-pointer hover:bg-stone-50 rounded-full z-20 p-1.5 right-2 top-1/2 -translate-y-1/2 transition-all"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0D1321"
+            stroke-width="2"
+            stroke-linecap="square"
+            stroke-linejoin="arcs"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </div>
+      <button
+        type="submit"
+        class="rounded cursor-pointer border-l-0 flex justify-center items-center border border-[#0D1321] bg-stone-50 hover:bg-stone-100 transition-all rounded-e-full w-full h-full"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#0D1321"
+          stroke-width="1"
+          stroke-linecap="square"
+          stroke-linejoin="arcs"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </form>
+    <div class="p-1">
+      <button
+        class="text-sm border border-[#0D1321] p-1 flex justify-center items-center rounded-full gap-2 cursor-pointer hover:bg-stone-50 transition-all"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#0D1321"
+          stroke-width="1"
+          stroke-linecap="square"
+          stroke-linejoin="arcs"
+        >
+          <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+          <circle cx="12" cy="10" r="3" />
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+        <span class="p-1">SIGN IN</span>
+      </button>
+    </div>
+  </div>
+</nav>

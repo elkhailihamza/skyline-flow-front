@@ -8,7 +8,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { AuthService } from './auth.service';
 import { RefreshComponent } from './refresh/refresh.component';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { AuthComponent } from './auth.component';
+import { LayoutModule } from '../layout/layout.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +21,7 @@ import { AuthComponent } from './auth.component';
     CommonModule,
     ReactiveFormsModule,
     AuthRoutingModule,
+    LayoutModule
   ],
   providers: [
     AuthService,

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { httpInterceptor } from './http.interceptor';
 import { AuthComponent } from './auth/auth.component';
 import { MainComponent } from './main/main.component';
-import { LayoutModule } from "./main/layout/layout.module";
+import { LayoutModule } from './layout/layout.module';
 
 export const fetchToken = () => {
   return localStorage.getItem('token');

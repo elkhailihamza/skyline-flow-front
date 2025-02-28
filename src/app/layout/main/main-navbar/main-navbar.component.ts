@@ -1,14 +1,14 @@
 import { Component, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LayoutService } from '../layout.service';
-import { Search } from '../interface/navbar';
+import { LayoutService } from '../../layout.service';
+import { Search } from '../../interface/navbar';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  selector: 'app-main-navbar',
+  templateUrl: './main-navbar.component.html',
+  styleUrl: './main-navbar.component.css'
 })
-export class NavbarComponent {
+export class MainNavbarComponent {
   searchBarNav: FormGroup;
   isFocused: boolean = false;
   hasInput: WritableSignal<boolean> = signal(false);
