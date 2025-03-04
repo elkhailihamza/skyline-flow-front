@@ -1,35 +1,118 @@
 <section class="p-16">
     <div class="flex justify-center items-center">
-        <form class="p-4 shadow-sm grid grid-rows-[1fr_3fr_1fr] border-2 border-stone-300 rounded gap-2">
-            <div class="p-4">
+        <form [formGroup]="registerForm" class="p-4 md:shadow-sm grid grid-rows-[auto_1fr_auto] md:border-2 md:border-stone-300 md:rounded-xl gap-2">
+            <div class="p-4 pb-0">
                 <span class="text-[#748CAB] font-light">Sign-up</span>
                 <h2 class="lg:text-3xl md:text-2xl text-xl font-medium">New User?</h2>
+                <div class="relative w-full flex justify-center mt-2">
+                    <span class="w-full border-b-2 border-gray-200"></span>
+                </div>
             </div>
-            <div class="grid place-items-center grid-rows-3 grid-cols-2 place-self-center min-w-[500px] max-w-[700px] [&>div]:p-2 [&>div]:mb-2 [&>div]:grid [&>div]:w-full">
-                <div>
-                    <label for="surname">Surname</label>
-                    <input id="surname" class="p-2 outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="surname">
+            <div class="p-2 grid place-items-center grid-rows-[auto_auto_auto] grid-cols-1 place-self-center min-w-[400px] max-w-[500px]">
+                <div class="col-span-2 grid grid-rows-[1fr_auto] p-2 mb-2 w-full">
+                    <div class="grid justify-between grid-cols-2 gap-4">
+                        <div>
+                            <label for="surname">Surname</label>
+                            <input formControlName="surname" id="surname" class="p-2 w-full outline-none border-2 b border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="Surname*">
+                        </div>
+                        <div>
+                            <label for="name">Name</label>
+                            <input formControlName="name" id="name" class="p-2 w-full outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="Name*">
+                        </div>
+                    </div>
+                    <div *ngIf="registerForm.get('surname')?.dirty && registerForm.get('surname')?.errors || registerForm.get('name')?.touched && registerForm.get('name')?.errors">
+                        <span *ngIf="registerForm.get('surname')?.dirty && registerForm.get('surname')?.errors" class="md:text-md text-sm text-[#900000FF] flex justify-start items-start gap-2 p-1">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="24" viewBox="0 0 24 24" fill="#900000FF" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle">
+                                    <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            </div>
+                            <span *ngIf="registerForm.get('surname')?.errors?.['required']">
+                                Surname is required.
+                            </span>
+                            <span *ngIf="registerForm.get('surname')?.errors?.['pattern']">
+                                Surname must be between 3 and 50 characters and can include letters, numbers, hyphens, and underscores.
+                            </span>
+                        </span>
+                        <span *ngIf="registerForm.get('name')?.dirty && registerForm.get('name')?.errors" class="md:text-md text-sm text-[#900000FF] flex justify-start items-start gap-2 p-1">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#900000FF" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle">
+                                    <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            </div>
+                            <span *ngIf="registerForm.get('name')?.errors?.['required']">
+                                Name is required.
+                            </span>
+                            <span *ngIf="registerForm.get('name')?.errors?.['pattern']">
+                                Name must be between 3 and 50 characters and can include letters, numbers, hyphens, and underscores.
+                            </span>
+                        </span>
+                    </div>
                 </div>
-                <div>
-                    <label for="name">Name</label>
-                    <input id="name" class="p-2 outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="name">
+                
+                <div class="p-2 mb-2 grid w-full col-span-2">
+                    <div class="grid w-full">
+                        <label for="email">Email</label>
+                        <input formControlName="email" id="email" class="p-2 outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="Email*">
+                    </div>
+                    <div *ngIf="registerForm.get('email')?.dirty && registerForm.get('email')?.errors">
+                        <span class="md:text-md text-sm text-[#900000FF] flex gap-2 p-1">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#900000FF" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle">
+                                    <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            </div>
+                            <span *ngIf="registerForm.get('email')?.errors?.['required']">
+                                Email is required.
+                            </span>
+                            <span *ngIf="registerForm.get('email')?.errors?.['email']">
+                                Please enter a valid email address.
+                            </span>
+                        </span>
+                    </div>
                 </div>
-                <div class="col-span-2">
-                    <label for="email">Email</label>
-                    <input id="email" class="p-2 outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="email">
-                </div>
-                <div>
-                    <label for="password">Password</label>
-                    <input id="password" class="p-2 outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="password">
-                </div>
-                <div>
-                    <label for="confirm_password">Confirm Password</label>
-                    <input id="confirm_password" class="p-2 outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="text" placeholder="confirm">
+
+                <div class="col-span-2 grid grid-rows-[1fr_auto] p-2 mb-2 w-full">
+                    <div class="grid justify-between grid-cols-2 gap-4">
+                        <div>
+                            <label for="password">Password</label>
+                            <input formControlName="password" id="password" class="p-2 w-full outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="password" placeholder="Password*">
+                        </div>
+                        <div>
+                            <label for="confirm_password">Confirm Password</label>
+                            <input formControlName="confirmPassword" id="confirm_password" class="p-2 w-full outline-none border-2 border-[#0D1321] bg-gray-50 focus:bg-white rounded" type="password" placeholder="Confirm Password*">
+                        </div>
+                    </div>
+                    <div *ngIf="registerForm.get('password')?.dirty && registerForm.get('password')?.errors || registerForm.get('confirmPassword')?.dirty">
+                        <span *ngIf="registerForm.get('password')?.errors" class="md:text-md text-sm text-[#900000FF] flex gap-2 p-1">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#900000FF" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle">
+                                    <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            </div>
+                            <span *ngIf="registerForm.get('password')?.errors?.['required']">
+                                Passwords is required.
+                            </span>
+                            <span *ngIf="registerForm.get('password')?.errors?.['pattern']">
+                                Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character (#?!&#64;$%^&*-).
+                            </span>
+                        </span>
+                        <span *ngIf=" registerForm.get('confirmPassword')?.dirty && registerForm.get('confirmPassword')?.errors?.['passwordMismatch']" class="md:text-md text-sm text-[#900000FF] flex gap-2 p-1">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#900000FF" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle inline-block">
+                                    <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            </div>
+                            <span>
+                                Passwords do not match.
+                            </span>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="p-2">
                 <div class="mb-2 text-md">
-                    <h2>Already a user? <a [routerLink]="'/auth/login'" class="hover:underline text-[#748CAB]">sign in</a></h2>
+                    <h2>Already a user? <a [routerLink]="'/auth/login'" class="hover:underline text-[#748CAB]">Sign in</a></h2>
                 </div>
                 <button class="py-2 px-6 w-full rounded bg-[#5F8FB9FF] hover:bg-[#779EC0FF] text-white font-medium cursor-pointer" type="submit">
                     Sign up
