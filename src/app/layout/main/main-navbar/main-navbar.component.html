@@ -1,4 +1,4 @@
-<nav class="px-4">
+<nav class="px-4 border-b-1 border-gray-200">
   <div
     class="p-2 grid grid-rows-1 grid-cols-[1fr_4fr_1fr] place-items-center w-full"
   >
@@ -23,12 +23,12 @@
           (blur)="offSearch()"
           type="text"
           [ngClass]="{ 'pl-14': isFocused || hasInput() }"
-          class="p-[0.5em] pl-4 outline-none border border-[#0D1321] border-r-none rounded-s-full w-full min-w-[100px]"
+          class="p-[0.5em] pl-4 outline-none border border-gray-200 border-r-none rounded-s-full w-full min-w-[100px]"
           placeholder="Search.."
         />
         <span
           *ngIf="isFocused || hasInput()"
-          class="absolute pr-1.5 left-5 top-1/2 -translate-y-1/2 transition-all border-r-2 border-stone-200"
+          class="absolute pr-1.5 left-5 top-1/2 -translate-y-1/2 transition-all border-r-2 border-gray-200"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@
         <span
           *ngIf="hasInput()"
           (click)="cancelSearch($event)"
-          class="absolute cursor-pointer hover:bg-stone-50 rounded-full z-20 p-1.5 right-2 top-1/2 -translate-y-1/2 transition-all"
+          class="absolute cursor-pointer bg-stone-50 hover:bg-white rounded-full z-20 p-1.5 right-2 top-1/2 -translate-y-1/2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@
       </div>
       <button
         type="submit"
-        class="rounded cursor-pointer border-l-0 flex justify-center items-center border border-[#0D1321] bg-stone-50 hover:bg-stone-100 transition-all rounded-e-full w-full h-full"
+        class="rounded cursor-pointer border-l-0 flex justify-center items-center border border-gray-200 bg-stone-50 hover:bg-white rounded-e-full w-full h-full"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +86,8 @@
     </form>
     <div class="p-1">
       <button
-        class="text-sm border border-[#0D1321] p-1 flex justify-center items-center rounded-full gap-2 cursor-pointer hover:bg-stone-50 transition-all"
+        class="px-2 text-sm border border-gray-200 p-1 flex justify-center items-center rounded-full gap-2 cursor-pointer hover:bg-white bg-stone-50"
+        routerLink="/auth/login"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +95,7 @@
           height="22"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#0D1321"
+          stroke="#585858FF"
           stroke-width="1"
           stroke-linecap="square"
           stroke-linejoin="arcs"

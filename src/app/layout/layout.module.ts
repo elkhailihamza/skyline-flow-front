@@ -5,6 +5,7 @@ import { LayoutService } from './layout.service';
 import { AuthNavbarComponent } from './auth/navbar/auth-navbar.component';
 import { MainNavbarComponent } from './main/main-navbar/main-navbar.component';
 import { AuthFooterComponent } from './auth/footer/auth-footer/auth-footer.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { AuthFooterComponent } from './auth/footer/auth-footer/auth-footer.compo
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ],
   providers: [
     LayoutService
