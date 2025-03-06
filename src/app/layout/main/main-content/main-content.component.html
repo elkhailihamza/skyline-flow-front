@@ -1,0 +1,39 @@
+<div class="p-2 grid grid-rows-[auto_auto] hover:bg-gray-50 rounded-xl cursor-pointer min-w-[300px] min-h-[200px] max-w-[300px] max-h-[250px]">
+    <div class="p-1 flex justify-center relative rounded-lg mb-2">
+        <img
+            [src]="content.imgSrc"
+            alt="Custom Logo"
+            class="w-full h-full object-cover"
+        />
+        <span class="absolute text-sm bottom-1 right-1 bg-[#8080806C] rounded-md text-gray-200 px-1">{{content.duration}}</span>
+    </div>
+    <div class="grid grid-cols-[auto_4fr_auto] gap-1">
+        <div>
+            <div class="w-[40px] h-[40px] flex justify-center">
+                <img
+                    [src]="content.accountImg"
+                    alt="Custom Logo"
+                    class="w-full h-full object-cover rounded-full"
+                    routerLink="/account"
+                />
+            </div>
+        </div>
+        <div class="p-1">
+            <h2 class="text-md leading-tight line-clamp-2">
+                {{content.title}}
+            </h2>
+            <div class="text-gray-600 text-md">
+                <span>{{content.accountName}}</span>
+                <div class="flex gap-1 text-sm text-gray-500">
+                    <span>{{content.viewCount}}</span>
+                    <span>. {{content.timeAgo}}</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="my-1 hover:rounded-full hover:bg-gray-200 p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0D1321" stroke-width="2" stroke-linecap="square" stroke-linejoin="arcs"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+            </div>
+        </div>
+    </div>
+</div>
