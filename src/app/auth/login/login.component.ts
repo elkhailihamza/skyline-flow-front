@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Signal } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Login } from '../interface/login';
 
 @Component({
   selector: 'app-login',
@@ -9,16 +10,22 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  isLoading: Signal<boolean>;
+  hasBeenSubmitted: boolean = false;
 
   constructor(private authService: AuthService, private formBuilder: FormBuilder) {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.pattern("")]]
-    })
+      email: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+    this.isLoading = this.authService.isLoading;
   }
 
-
-  submit() {
-
+  onSubmit() {
+    this.hasBeenSubmitted = true;
+    if (this.loginForm.valid) {
+      const data = this.loginForm.value as Login;
+      this.authService.login(data).subscribe();
+    }
   }
 }

@@ -22,8 +22,8 @@
           (focus)="onSearch()"
           (blur)="offSearch()"
           type="text"
-          [ngClass]="{ 'pl-14': isFocused || hasInput() }"
-          class="p-[0.5em] pl-4 outline-none border border-gray-200 border-r-none rounded-s-full w-full min-w-[100px]"
+          [ngClass]="{ 'pl-14 placeholder-hidden': isFocused || hasInput() }"
+          class="p-[0.5em] pl-4 outline-none focus:border-blue-500 border border-gray-200 border-r-none rounded-s-full w-full min-w-[100px]"
           placeholder="Search.."
         />
         <span
@@ -84,28 +84,180 @@
         </svg>
       </button>
     </form>
-    <div class="p-1">
-      <button
-        class="px-2 text-sm border border-gray-200 p-1 flex justify-center items-center rounded-full gap-2 cursor-pointer hover:bg-white bg-stone-50"
-        routerLink="/auth/login"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#585858FF"
-          stroke-width="1"
-          stroke-linecap="square"
-          stroke-linejoin="arcs"
+    <div class="relative" 
+    x-data="{ dropdown_open: false}" 
+    x-init="dropdown_open = false">
+      <div>
+        <button
+          x-on:click="dropdown_open = !dropdown_open;"
+          (click)="catchUserShortDetails()"
+          type="button"
+          class="inline-flex group w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-all cursor-pointer"
+          id="menu-button"
+          x-bind:aria-expanded="dropdown_open"
+          aria-haspopup="true"
         >
-          <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
-          <circle cx="12" cy="10" r="3" />
-          <circle cx="12" cy="12" r="10" />
-        </svg>
-        <span class="p-1">SIGN IN</span>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#151515"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line
+              class="transform transition-all"
+              x1="3"
+              y1="6"
+              x2="21"
+              y2="6"
+              x-bind:class="dropdown_open ? 'translate-x-1' : 'translate-x-0 group-hover:translate-x-0.5'"
+            ></line>
+            <line
+              class="transform transition-all"
+              x1="3"
+              y1="18"
+              x2="21"
+              y2="18"
+              x-bind:class="dropdown_open ? 'translate-x-2' : 'translate-x-0 group-hover:translate-x-1'"
+            ></line>
+          </svg>
+        </button>
+      </div>
+
+      <div
+        x-show="dropdown_open"
+        class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+        x-transition:enter="transition ease-out duration-100"
+        x-transition:enter-start="transform opacity-0 scale-95"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-95"
+        x-on:click.outside="dropdown_open = false"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="menu-button"
+        *ngIf="!userInfoLoading; else userInfoIsStillLoading"
+      >
+        <div class="py-1">
+          <div class="p-2 grid grid-cols-[1fr_4fr_auto] border-b-2 border-gray-200">
+            <div class="p-1">
+              <div class="w-full text-sm">
+                <img src="{{userShortDetails()?.accountPublicInfoDTO?.profilePicture}}" alt="" *ngIf="userShortDetails()?.accountPublicInfoDTO?.profilePicture; else noPfp">
+                <ng-template #noPfp>
+                  <div class="w-12 h-12 rounded-full flex items-center justify-center">
+                    <img
+                      src="assets/public/noPfp.svg"
+                      alt="Custom Logo"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+            <div class="p-1 grid-rows-[auto_4fr_auto]">
+              <div>
+                {{userShortDetails()?.email}}
+              </div>
+              <div>
+                {{userShortDetails()?.name+" "+userShortDetails()?.surname}}
+              </div>
+              <div class="[&>a]:hover:underline [&>a]:text-blue-500">
+                <a routerLink="/account/" *ngIf="userShortDetails()?.accountPublicInfoDTO?.username; else noAccount">
+                  view account
+                </a>
+                <ng-template #noAccount>
+                  <a routerLink="/account/create">create account</a>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <a
+            href="/c/user/profile"
+            class="block flex gap-4 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 group cursor-pointer focus:bg-gray-300"
+            role="menuitem"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="group-hover:stroke-black"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#344E41"
+              stroke-width="2.5"
+              stroke-linecap="square"
+              stroke-linejoin="arcs"
+            >
+              <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+              <circle cx="12" cy="10" r="3" />
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+            <span class="font-medium group-hover:text-black">Profile</span>
+          </a>
+          <a
+            href="/auth/logout"
+            class="block flex gap-4 px-4 py-2 text-sm text-gray-700 hover:bg-red-500 group cursor-pointer focus:bg-red-700"
+            role="menuitem"
+          >
+            <svg
+              class="group-hover:stroke-white"
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#344E41"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9" />
+            </svg>
+            <span class="font-medium group-hover:text-white">Logout</span>
+          </a>
+        </div>
+      </div>
+
+      <ng-template #userInfoIsStillLoading>
+        <div class="w-full h-full h-48 w-48 flex justify-center items-center">
+          <svg class="self-center bg-transparent block animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="85" height="85" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="50" cx="50">
+            </circle>
+            <g></g></g>
+          </svg>
+        </div>
+      </ng-template>
     </div>
+    
+    <ng-template #noAuth>
+      <div class="p-1">
+        <button
+          class="px-2 text-sm border border-gray-200 p-1 flex justify-center items-center rounded-full gap-2 cursor-pointer hover:bg-white bg-stone-50"
+          routerLink="/auth/login"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#585858FF"
+            stroke-width="1"
+            stroke-linecap="square"
+            stroke-linejoin="arcs"
+          >
+            <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+            <circle cx="12" cy="10" r="3" />
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+          <span class="p-1">SIGN IN</span>
+        </button>
+      </div>
+    </ng-template>
   </div>
 </nav>

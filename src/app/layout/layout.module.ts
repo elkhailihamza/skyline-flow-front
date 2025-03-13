@@ -7,6 +7,7 @@ import { MainNavbarComponent } from './main/main-navbar/main-navbar.component';
 import { AuthFooterComponent } from './auth/footer/auth-footer/auth-footer.component';
 import { RouterModule } from '@angular/router';
 import { MainContentComponent } from './main/main-content/main-content.component';
+import { AuthService } from '../auth/auth.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { MainContentComponent } from './main/main-content/main-content.component
     RouterModule
   ],
   providers: [
-    LayoutService
+    LayoutService,
+    AuthService
   ],
   exports: [
     MainNavbarComponent,

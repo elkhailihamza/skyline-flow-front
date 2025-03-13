@@ -1,17 +1,7 @@
-export interface register {
+export interface Register {
+    surname: string;
+    name: string;
     email: string;
     password: string;
+    confirmPassword: string;
 };
-
-export interface RegisterSuccess {
-    token: string;
-    refreshToken: string;
-    expirationDate: string;
-};
-
-export interface RegisterFailed {
-    code: number;
-    message: string;
-};
-
-export type LoginResponse = RegisterSuccess | RegisterFailed;

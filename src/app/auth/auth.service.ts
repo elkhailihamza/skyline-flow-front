@@ -8,6 +8,7 @@ import { Login, LoginResponse, LoginSuccess } from './interface/login';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IS_PUBLIC } from './auth.interceptor';
 import { JwtutilService } from '../util/jwtutil.service';
+import { Register } from './interface/register';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AuthService {
   private readonly BASE_URL = "auth";
   private readonly CONTEXT = {context: new HttpContext().set(IS_PUBLIC, true)};
   private readonly TOKEN_EXPIRY_THRESHOLD_MINUTES = 5;
-  isLoading = false;
+  isLoading: WritableSignal<boolean> = signal(false);
 
   constructor(private readonly http: HttpClient, 
     private readonly router: Router, 
@@ -24,52 +25,62 @@ export class AuthService {
     private readonly destroyRef: DestroyRef,
     private readonly jwtUtil: JwtutilService) { }
 
-  get user(): WritableSignal<User | null> {
-    const token = localStorage.getItem('token');
-    if (!this.jwtUtil.isJwtValid(token!) && token) {
-      localStorage.setItem('token', '');
-      return signal(null);
-    }
-    return signal(token ? this.jwtHelper.decodeToken(token) : null);
-  }
+    get user(): WritableSignal<User | null> {
+      const token = localStorage.getItem('token');
+      if (!token || !this.jwtUtil.isJwtValid(token)) {
+        localStorage.removeItem('token');
+        return signal(null);
+      }
 
-  register(data: any): Observable<any> {
-    this.isLoading = true;
+      const decodedToken = this.jwtHelper.decodeToken(token);
+
+      const user: User = {
+        name: decodedToken.name || "Unknown",
+        surname: decodedToken.surname || "Unknown",
+        email: decodedToken.sub || "No email",
+        roles: decodedToken.roles || [],
+      };
+      return signal(user);
+    }
+    
+
+  register(data: Register): Observable<any> {
+    this.isLoading.set(true);
     return this.http.post<LoginResponse>(`${this.BASE_URL}/register`, data, this.CONTEXT)
     .pipe(
       catchError(error => {
         if (error.status === 409) {
           console.error('Email already in use!');
         }
-        this.isLoading = false;
+        this.isLoading.set(false);
         return EMPTY;
       }), 
-      tap(() => {
-        this.isLoading = false;
-        this.router.navigate(['/auth/login']);
+      tap(data => {
+        this.stockAndNavigate(data as LoginSuccess);
       })
     );
   }
 
   login (data: Login): Observable<any> {
-    this.isLoading = true;
+    this.isLoading.set(true);
     return this.http.post<LoginResponse>(`${this.BASE_URL}/login`, data, this.CONTEXT)
       .pipe(
-        catchError(error => {
-        if (error.status === 401) {
-          console.error('Invalid credentials');
-        }
-        this.isLoading = false;
+        catchError(() => {
+        this.isLoading.set(false);
         return EMPTY;
       }),
       tap(data => {
-        const loginSuccessData = data as LoginSuccess;
-        this.stockTokens(loginSuccessData);
-        this.scheduleTokenRefresh(loginSuccessData.token);
-        this.isLoading = false;
-        this.router.navigate(['/dashboard/home']);
+        this.stockAndNavigate(data as LoginSuccess);
       })
     )
+  }
+
+  stockAndNavigate(data: LoginSuccess) {
+    const loginSuccessData = data as LoginSuccess;
+    this.stockTokens(loginSuccessData);
+    this.scheduleTokenRefresh(loginSuccessData.jwtToken);
+    this.isLoading.set(false);
+    this.router.navigate(['/user/profile']);
   }
 
   logout(): void {
@@ -83,9 +94,9 @@ export class AuthService {
   }
 
   stockTokens (data: LoginSuccess): void {
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('refresh_token', data.refreshToken);
-    localStorage.setItem('expiration_date', data.expirationDate);
+    localStorage.setItem('token', data.jwtToken);
+    localStorage.setItem('refresh_token', data.jwtRefreshToken);
+    localStorage.setItem('expiration_date', data.expDate);
   }
 
   refreshToken(): Observable<LoginResponse | null> {
@@ -101,7 +112,7 @@ export class AuthService {
         tap(data => {
           const loginSuccessData = data as LoginSuccess;
           this.stockTokens(loginSuccessData);
-          this.scheduleTokenRefresh(loginSuccessData.token);
+          this.scheduleTokenRefresh(loginSuccessData.jwtToken);
         })
       );
   }

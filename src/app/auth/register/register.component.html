@@ -1,6 +1,6 @@
 <section class="p-16">
     <div class="flex justify-center items-center">
-        <form [formGroup]="registerForm" class="p-4 md:shadow-sm grid grid-rows-[auto_1fr_auto] md:border-2 md:border-stone-300 md:rounded-xl gap-2">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-4 md:shadow-sm grid grid-rows-[auto_1fr_auto] md:border-2 md:border-stone-300 md:rounded-xl gap-2">
             <div class="p-4 pb-0">
                 <span class="text-[#748CAB] font-light">Sign-up</span>
                 <h2 class="lg:text-3xl md:text-2xl text-xl font-medium">New User?</h2>
@@ -110,13 +110,19 @@
                     </div>
                 </div>
             </div>
-            <div class="p-2">
+            <div class="p-2 flex flex-col">
                 <div class="mb-2 text-md">
                     <h2>Already a user? <a [routerLink]="'/auth/login'" class="hover:underline text-[#748CAB]">Sign in</a></h2>
                 </div>
-                <button class="py-2 px-6 w-full rounded bg-[#5F8FB9FF] hover:bg-[#779EC0FF] text-white font-medium cursor-pointer" type="submit">
+                <button *ngIf="!isLoading(); else loadSVG" class="py-2 px-6 w-full rounded bg-[#5F8FB9FF] hover:bg-[#779EC0FF] text-white font-medium cursor-pointer" type="submit">
                     Sign up
                 </button>
+                <ng-template #loadSVG>
+                    <svg class="self-center bg-transparent block animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="85" height="85" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="50" cx="50">
+                      </circle>
+                      <g></g></g>
+                    </svg>
+                </ng-template>
             </div>
         </form>
     </div>
