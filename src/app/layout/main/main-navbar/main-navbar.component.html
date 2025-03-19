@@ -1,0 +1,260 @@
+<nav class="px-4 border-b-1 border-gray-200">
+  <div
+    class="p-2 grid grid-rows-1 grid-cols-[0.5fr_4fr_0.5fr] place-items-center w-full"
+  >
+    <div class="p-1">
+      <a routerLink="/" class="cursor-pointer">
+        <img
+          src="assets/public/skyflow_logo.svg"
+          alt="Custom Logo"
+          class="min-w-[100px]"
+        />
+      </a>
+    </div>
+    <form
+      [formGroup]="searchBarNav"
+      (ngSubmit)="onSubmit()"
+      class="p-1 w-1/2 grid grid-rows-1 grid-cols-[auto_4em] place-items-center"
+    >
+      <div class="relative w-full min-w-[100px]">
+        <input
+          formControlName="search"
+          (focus)="onSearch()"
+          (blur)="offSearch()"
+          type="text"
+          [ngClass]="{ 'ps-14': isFocused || hasInput() }"
+          class="p-[0.5em] pl-4 outline-none focus:border-blue-500 border border-gray-200 border-r-none rounded-s-full w-full min-w-[100px]"
+          placeholder="Search.."
+        />
+        <span
+          *ngIf="isFocused || hasInput()"
+          class="absolute pr-1.5 left-5 top-1/2 -translate-y-1/2 transition-all border-r-2 border-gray-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            width="22"
+            height="22"
+            viewBox="0 0 50 50"
+          >
+            <path
+              d="M 21 3 C 11.621094 3 4 10.621094 4 20 C 4 29.378906 11.621094 37 21 37 C 24.710938 37 28.140625 35.804688 30.9375 33.78125 L 44.09375 46.90625 L 46.90625 44.09375 L 33.90625 31.0625 C 36.460938 28.085938 38 24.222656 38 20 C 38 10.621094 30.378906 3 21 3 Z M 21 5 C 29.296875 5 36 11.703125 36 20 C 36 28.296875 29.296875 35 21 35 C 12.703125 35 6 28.296875 6 20 C 6 11.703125 12.703125 5 21 5 Z"
+            ></path>
+          </svg>
+        </span>
+        <span
+          *ngIf="hasInput()"
+          (click)="cancelSearch($event)"
+          class="absolute cursor-pointer bg-stone-50 hover:bg-white rounded-full z-20 p-1.5 right-2 top-1/2 -translate-y-1/2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#0D1321"
+            stroke-width="2"
+            stroke-linecap="square"
+            stroke-linejoin="arcs"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </div>
+      <button
+        type="submit"
+        class="rounded cursor-pointer border-l-0 flex justify-center items-center border border-gray-200 bg-stone-50 hover:bg-white rounded-e-full w-full h-full"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#0D1321"
+          stroke-width="1"
+          stroke-linecap="square"
+          stroke-linejoin="arcs"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </form>
+    <div class="relative" 
+    x-data="{ dropdown_open: false}" 
+    x-init="dropdown_open = false"
+    *ngIf="(isAuthenticated$ | async); else noAuth">
+      <div>
+        <button
+          x-on:click="dropdown_open = !dropdown_open;"
+          type="button"
+          class="inline-flex group w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-all cursor-pointer"
+          id="menu-button"
+          x-bind:aria-expanded="dropdown_open"
+          aria-haspopup="true"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#151515"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line
+              class="transform transition-all"
+              x1="3"
+              y1="6"
+              x2="21"
+              y2="6"
+              x-bind:class="dropdown_open ? 'translate-x-1' : 'translate-x-0 group-hover:translate-x-0.5'"
+            ></line>
+            <line
+              class="transform transition-all"
+              x1="3"
+              y1="18"
+              x2="21"
+              y2="18"
+              x-bind:class="dropdown_open ? 'translate-x-2' : 'translate-x-0 group-hover:translate-x-1'"
+            ></line>
+          </svg>
+        </button>
+      </div>
+
+      <div
+        x-show="dropdown_open"
+        class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+        x-transition:enter="transition ease-out duration-100"
+        x-transition:enter-start="transform opacity-0 scale-95"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-95"
+        x-on:click.outside="dropdown_open = false"
+        role="menu"
+        aria-orientation="vertical"
+        aria-labelledby="menu-button"
+        *ngIf="!(userInfoLoading$ | async); else userInfoIsStillLoading"
+      >
+        <div class="py-1">
+          <div class="p-2 gap-3 grid grid-cols-[1fr_4fr_auto] border-b-2 border-gray-200">
+            <div class="p-2">
+              <div class="w-full text-sm">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center">
+                  <img
+                    [src]="(userInfo$ | async)?.accountPublicInfo?.profilePicture || 'assets/public/noPfp.svg'"
+                    alt="user pfp"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="p-1 grid-rows-[auto_4fr_auto]">
+              <div>
+                {{(userInfo$ | async)?.accountPublicInfo?.username || (userInfo$ | async)?.email}}
+              </div>
+              <div>
+                {{(userInfo$ | async)?.name+" "+(userInfo$ | async)?.surname}}
+              </div>
+              <div class="[&>a]:hover:underline [&>a]:text-blue-500">
+                <a routerLink="/account/" *ngIf="(userInfo$ | async)?.accountPublicInfo?.username; else noAccount">
+                  view account
+                </a>
+                <ng-template #noAccount>
+                  <a routerLink="/account/create">create account</a>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+          <a
+            href="/c/user/profile"
+            class="block flex gap-4 px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 group cursor-pointer focus:bg-gray-300"
+            role="menuitem"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="group-hover:stroke-black"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#344E41"
+              stroke-width="2.5"
+              stroke-linecap="square"
+              stroke-linejoin="arcs"
+            >
+              <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+              <circle cx="12" cy="10" r="3" />
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+            <span class="font-medium group-hover:text-black">Profile</span>
+          </a>
+          <a
+            href="/auth/logout"
+            class="block flex gap-4 px-4 py-2 text-sm text-gray-700 hover:bg-red-500 group cursor-pointer focus:bg-red-700"
+            role="menuitem"
+          >
+            <svg
+              class="group-hover:stroke-white"
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#344E41"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9" />
+            </svg>
+            <span class="font-medium group-hover:text-white">Sign out</span>
+          </a>
+        </div>
+      </div>
+
+      <ng-template #userInfoIsStillLoading>
+        <div class="w-full h-full h-48 w-48 flex justify-center items-center">
+          <svg class="self-center bg-transparent block animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="85" height="85" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="50" cx="50">
+            </circle>
+            <g></g></g>
+          </svg>
+        </div>
+      </ng-template>
+    </div>
+    
+    <ng-template #noAuth>
+      <div class="p-1">
+        <button
+          class="px-2 text-sm border border-gray-200 p-1 flex justify-center items-center rounded-full gap-2 cursor-pointer hover:bg-white bg-stone-50"
+          routerLink="/auth/login"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#585858FF"
+            stroke-width="1"
+            stroke-linecap="square"
+            stroke-linejoin="arcs"
+          >
+            <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+            <circle cx="12" cy="10" r="3" />
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+          <span class="p-1 whitespace-nowrap">SIGN IN</span>
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</nav>

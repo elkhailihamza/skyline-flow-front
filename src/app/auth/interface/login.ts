@@ -4,9 +4,9 @@ export interface Login {
 };
 
 export interface LoginSuccess {
-    token: string;
-    refreshToken: string;
-    expirationDate: string;
+    jwtToken: string;
+    jwtRefreshToken: string;
+    expDate: string;
 };
 
 export interface LoginFailed {
