@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 import { RefreshComponent } from './refresh/refresh.component';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { LayoutModule } from '../layout/layout.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { LayoutModule } from '../layout/layout.module';
     CommonModule,
     ReactiveFormsModule,
     AuthRoutingModule,
-    LayoutModule
+    LayoutModule,
   ],
   providers: [
     AuthService,

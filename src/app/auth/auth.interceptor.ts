@@ -12,28 +12,41 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  if (auth.isAuthenticated()) {
-    const authRequest = addAuthorizationHeader(req);
-    return next(authRequest).pipe(
-      catchError((error) => handleAuthError(error, router))
-    );
-  } else {
-    return auth.refreshToken().pipe(
-      switchMap(() => {
+  return auth.isAuthenticated().pipe(
+    switchMap((isAuthenticated) => {
+      if (isAuthenticated) {
         const authRequest = addAuthorizationHeader(req);
         return next(authRequest).pipe(
           catchError((error) => handleAuthError(error, router))
         );
-      }),
-      catchError((error) => handleAuthError(error, router))
-    );
-  }
+      } else {
+        return auth.refreshToken().pipe(
+          switchMap((refreshData) => {
+            if (refreshData) {
+              const authRequest = addAuthorizationHeader(req);
+              return next(authRequest).pipe(
+                catchError((error) => handleAuthError(error, router))
+              );
+            } else {
+              auth.logout();
+              router.navigate(['/auth/login']);
+              return EMPTY;
+            }
+          }),
+          catchError((error) => {
+            handleAuthError(error, router);
+            return EMPTY;
+          })
+        );
+      }
+    }),
+    catchError((error) => handleAuthError(error, router))
+  );
 };
 
 const addAuthorizationHeader = (req: HttpRequest<any>) => {
-  const token = localStorage.getItem('token');
   return req.clone({
-    headers: req.headers.set('Authorization', `Bearer ${token}`)
+    withCredentials: true
   });
 };
 

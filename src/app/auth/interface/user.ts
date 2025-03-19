@@ -1,8 +1,12 @@
+import { Account } from "../../main/interface/account";
+
 export interface User {
-    name: string;
+    id: number;
     surname: string;
+    name: string;
     email: string;
     roles: string[];
+    account: Account | null;
 };
 
 export interface UserShortDetails {
@@ -10,7 +14,7 @@ export interface UserShortDetails {
     name: string;
     surname: string;
     email: string;
-    accountPublicInfoDTO: AccountShortDetails;
+    accountPublicInfo: AccountShortDetails | null;
 }
 
 export interface AccountShortDetails {

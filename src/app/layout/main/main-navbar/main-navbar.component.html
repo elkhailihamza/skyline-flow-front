@@ -1,13 +1,13 @@
 <nav class="px-4 border-b-1 border-gray-200">
   <div
-    class="p-2 grid grid-rows-1 grid-cols-[1fr_4fr_1fr] place-items-center w-full"
+    class="p-2 grid grid-rows-1 grid-cols-[0.5fr_4fr_0.5fr] place-items-center w-full"
   >
     <div class="p-1">
       <a routerLink="/" class="cursor-pointer">
         <img
           src="assets/public/skyflow_logo.svg"
           alt="Custom Logo"
-          class="logo"
+          class="min-w-[100px]"
         />
       </a>
     </div>
@@ -22,7 +22,7 @@
           (focus)="onSearch()"
           (blur)="offSearch()"
           type="text"
-          [ngClass]="{ 'pl-14 placeholder-hidden': isFocused || hasInput() }"
+          [ngClass]="{ 'ps-14': isFocused || hasInput() }"
           class="p-[0.5em] pl-4 outline-none focus:border-blue-500 border border-gray-200 border-r-none rounded-s-full w-full min-w-[100px]"
           placeholder="Search.."
         />
@@ -86,11 +86,11 @@
     </form>
     <div class="relative" 
     x-data="{ dropdown_open: false}" 
-    x-init="dropdown_open = false">
+    x-init="dropdown_open = false"
+    *ngIf="(isAuthenticated$ | async); else noAuth">
       <div>
         <button
           x-on:click="dropdown_open = !dropdown_open;"
-          (click)="catchUserShortDetails()"
           type="button"
           class="inline-flex group w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-all cursor-pointer"
           id="menu-button"
@@ -142,33 +142,30 @@
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="menu-button"
-        *ngIf="!userInfoLoading; else userInfoIsStillLoading"
+        *ngIf="!(userInfoLoading$ | async); else userInfoIsStillLoading"
       >
         <div class="py-1">
-          <div class="p-2 grid grid-cols-[1fr_4fr_auto] border-b-2 border-gray-200">
-            <div class="p-1">
+          <div class="p-2 gap-3 grid grid-cols-[1fr_4fr_auto] border-b-2 border-gray-200">
+            <div class="p-2">
               <div class="w-full text-sm">
-                <img src="{{userShortDetails()?.accountPublicInfoDTO?.profilePicture}}" alt="" *ngIf="userShortDetails()?.accountPublicInfoDTO?.profilePicture; else noPfp">
-                <ng-template #noPfp>
-                  <div class="w-12 h-12 rounded-full flex items-center justify-center">
-                    <img
-                      src="assets/public/noPfp.svg"
-                      alt="Custom Logo"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                </ng-template>
+                <div class="w-12 h-12 rounded-full flex items-center justify-center">
+                  <img
+                    [src]="(userInfo$ | async)?.accountPublicInfo?.profilePicture || 'assets/public/noPfp.svg'"
+                    alt="user pfp"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
               </div>
             </div>
             <div class="p-1 grid-rows-[auto_4fr_auto]">
               <div>
-                {{userShortDetails()?.email}}
+                {{(userInfo$ | async)?.accountPublicInfo?.username || (userInfo$ | async)?.email}}
               </div>
               <div>
-                {{userShortDetails()?.name+" "+userShortDetails()?.surname}}
+                {{(userInfo$ | async)?.name+" "+(userInfo$ | async)?.surname}}
               </div>
               <div class="[&>a]:hover:underline [&>a]:text-blue-500">
-                <a routerLink="/account/" *ngIf="userShortDetails()?.accountPublicInfoDTO?.username; else noAccount">
+                <a routerLink="/account/" *ngIf="(userInfo$ | async)?.accountPublicInfo?.username; else noAccount">
                   view account
                 </a>
                 <ng-template #noAccount>
@@ -219,7 +216,7 @@
             >
               <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9" />
             </svg>
-            <span class="font-medium group-hover:text-white">Logout</span>
+            <span class="font-medium group-hover:text-white">Sign out</span>
           </a>
         </div>
       </div>
@@ -255,7 +252,7 @@
             <circle cx="12" cy="10" r="3" />
             <circle cx="12" cy="12" r="10" />
           </svg>
-          <span class="p-1">SIGN IN</span>
+          <span class="p-1 whitespace-nowrap">SIGN IN</span>
         </button>
       </div>
     </ng-template>

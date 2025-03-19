@@ -3,8 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LayoutService } from '../../layout.service';
 import { Search } from '../../interface/navbar';
 import { AuthService } from '../../../auth/auth.service';
-import { take } from 'rxjs';
-import { UserShortDetails } from '../../../auth/interface/user';
+import { map, Observable } from 'rxjs';
+import { AccountShortDetails, User, UserShortDetails } from '../../../auth/interface/user';
+import { Store } from '@ngrx/store';
+import { selectUser, selectUserIsLoggedIn, selectUserLoading } from '../../../state/selectors/auth.selectors';
 
 @Component({
   selector: 'app-main-navbar',
@@ -15,11 +17,11 @@ export class MainNavbarComponent {
   searchBarNav: FormGroup;
   isFocused: boolean = false;
   hasInput: WritableSignal<boolean> = signal(false);
-  isAuthenticated: boolean = this.auth.isAuthenticated();
-  userShortDetails: WritableSignal<UserShortDetails | null> = signal(null);
-  userInfoLoading: boolean = false;
+  isAuthenticated$: Observable<boolean>;
+  userInfo$: Observable<UserShortDetails | null>;
+  userInfoLoading$: Observable<boolean>;
 
-  constructor(private formBuilder: FormBuilder, private layoutService: LayoutService, private auth: AuthService) { 
+  constructor(private formBuilder: FormBuilder, private layoutService: LayoutService, private auth: AuthService, private store: Store) { 
     this.searchBarNav = this.formBuilder.group({
       search: ['', Validators.required]
     })
@@ -27,6 +29,33 @@ export class MainNavbarComponent {
     this.searchBarNav.controls['search'].valueChanges.subscribe(value => {
       this.hasInput.set(value.length > 0);
     });
+
+    this.isAuthenticated$ = this.store.select(selectUserIsLoggedIn);
+    this.userInfoLoading$ = this.store.select(selectUserLoading);
+    this.userInfo$ = this.store.select(selectUser).pipe(
+      map((user: User | null) => {
+        if (user) {
+            const accountPublicInfo: AccountShortDetails | null = user.account
+            ? {
+                id: user.account.id,
+                username: user.account.username,
+                profilePicture: user.account.profilePicture,
+                createdAt: user.account.createdAt,
+              }
+          : null;
+  
+
+          return {
+            id: user.id,
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            accountPublicInfo,
+          };
+        }
+        return null;
+      })
+    );
   }
 
   onSubmit() {
@@ -56,14 +85,4 @@ export class MainNavbarComponent {
     }, 50);
   }
 
-  catchUserShortDetails() {
-    this.userInfoLoading = true;
-    this.layoutService.fetchUserInfo().pipe(take(1)).subscribe(
-      userInfo => {
-        this.userShortDetails.set(userInfo);
-        console.log(userInfo);
-      }
-    );
-    this.userInfoLoading = false;
-  }
 }
