@@ -1,13 +1,50 @@
-<section class="p-16">
-    <div class="p-8 grid grid-rows-2">
-        <div class="p-4 flex justify-center items-center">
-            <form class="p-2 border-2 rounded-xl border-gray" action="">
-                <div>
-    
+<section class="px-4 sm:px-16 py-4">
+    <div class="p-4 sm:p-8 grid grid-rows-[auto_4fr] gap-2">
+        <div class="p-2 sm:p-4 text-center">
+            <h2 class="font-medium text-xl md:text-2xl lg:text-3xl">Create your new account</h2>
+        </div>
+        <div class="p-2 sm:p-4 flex justify-center items-center select-none">
+            <form [formGroup]="accountCreate" (ngSubmit)="submitForm()" class="sm:p-4 md:max-w-[45em] md:min-w-[40em] sm:max-w-[30em] w-full border-gray grid md:grid-cols-[1fr_auto_1fr] md:gap-12 gap-8 place-items-center">
+                <div class="sm:p-2 grid w-full gap-1" [ngClass]="imageUrl ? 'grid-rows-[auto_4fr_1fr]' : 'grid-rows-[auto_4fr]'">
+                    <div class="flex flex-col">
+                        <span class="font-medium text-blue-500">Step 1</span>
+                        <span>Upload an image</span>
+                    </div>
+                    <label for="account_pfp" [ngClass]="imageUrl ?? 'group cursor-pointer'" class="relative group place-self-center p-1 w-[10em] md:w-[12em] h-[10em] md:h-[12em] rounded-full">
+                        <div *ngIf="!imageUrl" class="absolute z-2 w-full h-full flex flex-col justify-center items-center gap-2 bg-gray-200 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0D1321" stroke-width="2" stroke-linecap="square" stroke-linejoin="arcs">
+                                <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 4.2v10.3"/>
+                            </svg>
+                            <span class="text-sm md:text-md">Upload an image</span>
+                        </div>
+                        <img class="absolute z-1 object-cover rounded-full border-0 w-full h-full transition-all" [src]="imageUrl || 'assets/public/noPfp.svg'" [ngClass]="imageUrl ?? 'group-hover:opacity-0'" alt="pfp">
+                        <input (change)="onFileSelected($event)" formControlName="profilePicture" type="file" class="sr-only" id="account_pfp">
+                    </label>
+                    <div *ngIf="imageUrl" class="p-2 flex justify-center items-center gap-4">
+                        <div class="p-2 rounded-lg hover:bg-gray-200 focus:bg-gray-200 text-black cursor-pointer">
+                            <label for="account_pfp" class="cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0D1321" stroke-width="2" stroke-linecap="square" stroke-linejoin="arcs"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                            </label>
+                        </div>
+                        <div (click)="removeProfilePicture()" class="p-2 rounded-lg hover:bg-gray-200 focus:bg-gray-200 text-white cursor-pointer">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0D1321" stroke-width="2" stroke-linecap="square" stroke-linejoin="arcs"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class="grid grid-rows-[auto_1fr]">
-                    <label for="username">Choose a creative name</label>
-                    <input class="border" type="text" name="username" id="username" placeholder="username">
+                <span class="border-t-2 md:border-t-0 md:border-r-2 border-gray-200 h-5/6 hidden md:block"></span>
+                <div class="grid grid-rows-[auto_1fr] w-full gap-1">
+                    <label for="username">
+                        <div class="flex flex-col">
+                            <span class="font-medium text-blue-500">Step 2</span>
+                            <span>Choose a creative name</span>
+                        </div>
+                    </label>
+                    <input formControlName="username" class="p-2 outline-none border-2 focus:border-[#0D1321] bg-gray-50 focus:bg-white rounded" autocomplete="off" type="text" name="username" id="username" placeholder="Username..">
+                    <button type="submit" class="py-2 px-6 w-full rounded bg-[#5F8FB9FF] hover:bg-[#779EC0FF] text-white font-medium cursor-pointer">
+                        Create
+                    </button>
                 </div>
             </form>
         </div>

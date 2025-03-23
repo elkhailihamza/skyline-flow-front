@@ -4,6 +4,8 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AccountService } from './account.service';
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { ViewAccountComponent } from './view-account/view-account.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -13,7 +15,8 @@ import { ViewAccountComponent } from './view-account/view-account.component';
   ],
   imports: [
     CommonModule,
-    AccountRoutingModule
+    AccountRoutingModule,
+    ReactiveFormsModule,
   ],
   providers: [
     AccountService

@@ -20,6 +20,6 @@ export interface UserShortDetails {
 export interface AccountShortDetails {
     id: number;
     username: string;
-    profilePicture: string;
+    profilePicture: string | null;
     createdAt: string;
 }

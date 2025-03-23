@@ -1,9 +1,9 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { DestroyRef, Injectable, signal, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, EMPTY, Observable, take, tap } from 'rxjs';
+import { catchError, EMPTY, Observable, tap } from 'rxjs';
 import { User } from './interface/user';
-import { Login, LoginResponse, LoginSuccess } from './interface/login';
+import { Login, LoginResponse } from './interface/login';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IS_PUBLIC } from './auth.interceptor';
 import { Store } from '@ngrx/store';
@@ -19,7 +19,7 @@ export class AuthService {
   isLoading: WritableSignal<boolean> = signal(false);
   private userInfo$: Observable<User | null>;
 
-  constructor(private readonly http: HttpClient, private readonly router: Router, private readonly destroyRef: DestroyRef,private readonly store: Store) {
+  constructor(private readonly http: HttpClient, private readonly router: Router, private readonly destroyRef: DestroyRef, private readonly store: Store) {
     this.userInfo$ = this.store.select(selectUser);
   }
 
@@ -62,7 +62,7 @@ export class AuthService {
 
   logout(): void {
     this.http.post(`${this.BASE_URL}/logout`, {}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.router.navigate(['/auth/login']);
+      this.router.navigate(['/']);
     });
   }
 
@@ -72,11 +72,11 @@ export class AuthService {
   }
 
   isAuthenticated(): Observable<boolean> {
-    return this.http.get<boolean>(`${this.BASE_URL}/check-auth`);
+    return this.http.get<boolean>(`${this.BASE_URL}/check-auth`, this.CONTEXT);
   }
 
   getUserInfo(): Observable<User> {
-    return this.http.get<User>(`${this.BASE_URL}/me`, this.CONTEXT);
+    return this.http.get<User>(`${this.BASE_URL}/me`);
   }
 
   scheduleTokenRefresh(token: string): void {

@@ -5,8 +5,6 @@ export const httpInterceptor: HttpInterceptorFn = (req, next) => {
   const contextPath = "api";
   const clonedRequest = req.clone({
     url: `${environment.API_URL}/${contextPath}/${req.url}`,
-    withCredentials: true
   });
   return next(clonedRequest);
 };
-{}

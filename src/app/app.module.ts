@@ -13,6 +13,7 @@ import { StoreModule } from '@ngrx/store';
 import { authReducer } from './state/reducers/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffect } from './state/effects/auth.effect';
+import { ImageHandlerModule } from './image-handler/image-handler.module';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { AuthEffect } from './state/effects/auth.effect';
     HttpClientModule,
     LayoutModule,
     StoreModule.forRoot({ auth: authReducer}),
-    EffectsModule.forRoot([AuthEffect])
+    EffectsModule.forRoot([AuthEffect]),
+    ImageHandlerModule
 ],
   providers: [
     provideHttpClient(

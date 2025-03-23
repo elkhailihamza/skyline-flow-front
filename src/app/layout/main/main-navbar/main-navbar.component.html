@@ -85,12 +85,13 @@
       </button>
     </form>
     <div class="relative" 
-    x-data="{ dropdown_open: false}" 
+    x-data="{ dropdown_open: false }" 
     x-init="dropdown_open = false"
-    *ngIf="(isAuthenticated$ | async); else noAuth">
+    *ngIf="isAuthenticated; else noAuth">
       <div>
         <button
           x-on:click="dropdown_open = !dropdown_open;"
+          (click)="loadUserInfo()"
           type="button"
           class="inline-flex group w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-all cursor-pointer"
           id="menu-button"
@@ -142,7 +143,7 @@
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="menu-button"
-        *ngIf="!(userInfoLoading$ | async); else userInfoIsStillLoading"
+        *ngIf="!userInfoLoading; else userInfoIsStillLoading"
       >
         <div class="py-1">
           <div class="p-2 gap-3 grid grid-cols-[1fr_4fr_auto] border-b-2 border-gray-200">
@@ -150,26 +151,26 @@
               <div class="w-full text-sm">
                 <div class="w-12 h-12 rounded-full flex items-center justify-center">
                   <img
-                    [src]="(userInfo$ | async)?.accountPublicInfo?.profilePicture || 'assets/public/noPfp.svg'"
+                    [src]="imageUrl || 'assets/public/noPfp.svg'"
                     alt="user pfp"
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover rounded-full"  
                   />
                 </div>
               </div>
             </div>
             <div class="p-1 grid-rows-[auto_4fr_auto]">
               <div>
-                {{(userInfo$ | async)?.accountPublicInfo?.username || (userInfo$ | async)?.email}}
+                {{userInfo?.accountPublicInfo?.username || userInfo?.email}}
               </div>
               <div>
-                {{(userInfo$ | async)?.name+" "+(userInfo$ | async)?.surname}}
+                {{userInfo?.name+" "+userInfo?.surname}}
               </div>
-              <div class="[&>a]:hover:underline [&>a]:text-blue-500">
-                <a routerLink="/account/" *ngIf="(userInfo$ | async)?.accountPublicInfo?.username; else noAccount">
+              <div class="text-blue-500">
+                <a class="hover:underline" x-on:click="dropdown_open = false" [routerLink]="['/account', userInfo?.accountPublicInfo?.id]" *ngIf="userInfo?.accountPublicInfo?.username; else noAccount">
                   view account
                 </a>
                 <ng-template #noAccount>
-                  <a routerLink="/account/create">create account</a>
+                  <a class="hover:underline" x-on:click="dropdown_open = false" routerLink="/account/create">create account</a>
                 </ng-template>
               </div>
             </div>
