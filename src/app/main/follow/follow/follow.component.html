@@ -1,0 +1,19 @@
+<div class="relative inline-flex items-center justify-center min-w-[6rem] min-h-[2.5rem]">
+    <button
+      [disabled]="isLoading()"
+      (click)="isFollowing() ? unfollowAccount() : followAccount()"
+      class="w-full text-white px-2 py-1 rounded-lg hover:bg-blue-400 disabled:opacity-50"
+      [ngClass]="isFollowing() ? 'bg-red-500 hover:bg-red-400' : 'bg-blue-500 hover:bg-blue-400'"
+    >
+      {{ isFollowing() ? 'Unfollow' : 'Follow' }}
+    </button>
+    <ng-container *ngIf="isLoading()">
+      <div class="absolute inset-0 flex items-center justify-center bg-white/50 rounded-lg">
+        <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="30" height="30" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="20" cx="20">
+        </circle>
+        <g></g></g>
+        </svg>
+      </div>
+    </ng-container>
+  </div>
+  

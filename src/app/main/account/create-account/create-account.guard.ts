@@ -1,24 +1,23 @@
-import { inject } from '@angular/core';
+import { DestroyRef, inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AccountService } from '../account.service';
-import { map, take } from 'rxjs';
 import { AuthService } from '../../../auth/auth.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 export const createAccountGuard: CanActivateFn = (route, state) => {
-  const service = inject(AccountService);
   const auth = inject(AuthService);
+  const destoryRef = inject(DestroyRef);
   const router = inject(Router);
 
-  service.fetchUserAccount().pipe(
-    take(1),
-    map(account => {
-      if (account.username) {
-        router.navigate(['/account/' + auth.user()?.id]);
+  auth.user.pipe(
+    takeUntilDestroyed(destoryRef),
+    map(user => {
+      if (user?.account) {
+        router.navigate(['/account/'+user.account.id]);
         return false;
       }
       return true;
     })
   );
-
   return true;
 };

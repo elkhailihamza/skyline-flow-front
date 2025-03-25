@@ -4,19 +4,26 @@ import { AccountRoutingModule } from './account-routing.module';
 import { AccountService } from './account.service';
 import { CreateAccountComponent } from './create-account/create-account.component';
 import { ViewAccountComponent } from './view-account/view-account.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FollowService } from '../follow/follow.service';
+import { FollowModule } from "../follow/follow.module";
+import { FollowComponent } from '../follow/follow/follow.component';
 
 @NgModule({
   declarations: [
     ViewAccountComponent,
     CreateAccountComponent,
-    ViewAccountComponent
+    ViewAccountComponent,
   ],
   imports: [
     CommonModule,
-    AccountRoutingModule
-  ],
+    AccountRoutingModule,
+    ReactiveFormsModule,
+    FollowModule
+],
   providers: [
-    AccountService
+    AccountService,
+    FollowService
   ]
 })
 export class AccountModule { }

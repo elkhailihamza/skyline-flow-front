@@ -8,6 +8,7 @@ import { AuthFooterComponent } from './auth/footer/auth-footer/auth-footer.compo
 import { RouterModule } from '@angular/router';
 import { MainContentComponent } from './main/main-content/main-content.component';
 import { AuthService } from '../auth/auth.service';
+import { ImageHandlerService } from '../image-handler/image-handler.service';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AuthService } from '../auth/auth.service';
   ],
   providers: [
     LayoutService,
-    AuthService
+    AuthService,
+    ImageHandlerService
   ],
   exports: [
     MainNavbarComponent,

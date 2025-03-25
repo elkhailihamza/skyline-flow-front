@@ -85,17 +85,19 @@
       </button>
     </form>
     <div class="relative" 
-    x-data="{ dropdown_open: false}" 
+    x-data="{ dropdown_open: false }" 
     x-init="dropdown_open = false"
-    *ngIf="(isAuthenticated$ | async); else noAuth">
+    *ngIf="isAuthenticated; else noAuth">
       <div>
         <button
           x-on:click="dropdown_open = !dropdown_open;"
+          (click)="loadUserInfo()"
           type="button"
           class="inline-flex group w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-all cursor-pointer"
           id="menu-button"
           x-bind:aria-expanded="dropdown_open"
           aria-haspopup="true"
+          *ngIf="!navbarLoad(); else dropDownLoading"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -129,6 +131,15 @@
         </button>
       </div>
 
+      <ng-template #dropDownLoading>
+        <div class="w-full h-full h-48 w-48 flex justify-center items-center">
+          <svg class="self-center bg-transparent block animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="50" cx="50">
+            </circle>
+            <g></g></g>
+          </svg>
+        </div>
+      </ng-template>
+
       <div
         x-show="dropdown_open"
         class="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
@@ -142,34 +153,33 @@
         role="menu"
         aria-orientation="vertical"
         aria-labelledby="menu-button"
-        *ngIf="!(userInfoLoading$ | async); else userInfoIsStillLoading"
       >
-        <div class="py-1">
-          <div class="p-2 gap-3 grid grid-cols-[1fr_4fr_auto] border-b-2 border-gray-200">
+        <div class="py-1" *ngIf="!userInfoLoad(); else userInfoLoading">
+          <div class="p-2 gap-3 grid grid-cols-[1fr_4fr] min-w-[16em] max-w-[20em] border-b-2 border-gray-200">
             <div class="p-2">
               <div class="w-full text-sm">
                 <div class="w-12 h-12 rounded-full flex items-center justify-center">
                   <img
-                    [src]="(userInfo$ | async)?.accountPublicInfo?.profilePicture || 'assets/public/noPfp.svg'"
+                    [src]="imageUrl || 'assets/public/noPfp.svg'"
                     alt="user pfp"
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover rounded-full"  
                   />
                 </div>
               </div>
             </div>
             <div class="p-1 grid-rows-[auto_4fr_auto]">
-              <div>
-                {{(userInfo$ | async)?.accountPublicInfo?.username || (userInfo$ | async)?.email}}
+              <div class="font-medium">
+                {{userInfo?.accountPublicInfo?.username || userInfo?.email}}
               </div>
               <div>
-                {{(userInfo$ | async)?.name+" "+(userInfo$ | async)?.surname}}
+                {{userInfo?.name+" "+userInfo?.surname}}
               </div>
-              <div class="[&>a]:hover:underline [&>a]:text-blue-500">
-                <a routerLink="/account/" *ngIf="(userInfo$ | async)?.accountPublicInfo?.username; else noAccount">
+              <div class="text-blue-500">
+                <a class="hover:underline" x-on:click="dropdown_open = false" [routerLink]="['/account/'+userInfo?.accountPublicInfo?.username]" *ngIf="userInfo?.accountPublicInfo?.username; else noAccount">
                   view account
                 </a>
                 <ng-template #noAccount>
-                  <a routerLink="/account/create">create account</a>
+                  <a class="hover:underline" x-on:click="dropdown_open = false" routerLink="/account/create">create account</a>
                 </ng-template>
               </div>
             </div>
@@ -219,16 +229,15 @@
             <span class="font-medium group-hover:text-white">Sign out</span>
           </a>
         </div>
+        <ng-template #userInfoLoading>
+          <div class="w-full h-full h-48 w-48 flex justify-center items-center">
+            <svg class="self-center bg-transparent block animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="80" height="80" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="50" cx="50">
+              </circle>
+              <g></g></g>
+            </svg>
+          </div>
+        </ng-template>
       </div>
-
-      <ng-template #userInfoIsStillLoading>
-        <div class="w-full h-full h-48 w-48 flex justify-center items-center">
-          <svg class="self-center bg-transparent block animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="85" height="85" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="50" cx="50">
-            </circle>
-            <g></g></g>
-          </svg>
-        </div>
-      </ng-template>
     </div>
     
     <ng-template #noAuth>
