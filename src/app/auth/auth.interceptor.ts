@@ -55,8 +55,6 @@ const addAuthorizationHeader = (req: HttpRequest<any>): HttpRequest<any> => {
 
 const handleAuthError = (error: any, router: Router): Observable<never> => {
   if (error.status === 401) {
-    console.warn('Unauthorized! Redirecting to login...');
-    router.navigate(['/auth/login']);
     return EMPTY;
   }
   return EMPTY;

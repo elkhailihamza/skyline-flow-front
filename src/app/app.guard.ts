@@ -13,7 +13,7 @@ export const appGuard: CanActivateFn = (route, state) => {
     if (!user) {
       store.dispatch(loadUserInfo());
     }
-  }); 
+  });
 
   return true;
 };

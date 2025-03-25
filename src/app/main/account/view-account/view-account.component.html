@@ -1,1 +1,47 @@
-<p>view-account works!</p>
+<section class="p-8 max-w-screen-xl mx-auto">
+    <div class="p-8 grid grid-rows-[1fr_auto] gap-4 place-items-center">
+        <div class="p-4 grid grid-cols-[auto_4fr] gap-6 w-full rounded-3xl shadow">
+            <div class="max-w-[12em] max-h-[12em] aspect-square bg-gray-200 rounded-full flex justify-center items-center">
+                <img *ngIf="secondaryLoad(); else pfpLoad" class="object-cover rounded-full w-full h-full" [src]="account.profilePicture ?? 'assets/public/noPfp.svg'" alt="Profile Picture">
+                <ng-template #pfpLoad>
+                    <svg class="self-center bg-transparent block animate-spin w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g><circle stroke-dasharray="70.68583470577033 25.561944901923447" r="15" stroke-width="4" stroke="#000000FF" fill="none" cy="50" cx="50"></circle></g>
+                    </svg>
+                </ng-template>
+            </div>
+            <div class="p-2 flex flex-col justify-between mx-2">
+                <div>
+                    <div class="p-1 flex justify-between">
+                        <span>
+                            <span class="md:font-bold font-medium lg:text-3xl md:text-2xl text-xl">
+                                {{account.user?.name + " " + account.user?.surname}}
+                            </span>
+                            <br>
+                            <span class="font-medium italic lg:text-xl text-md">
+                                {{"@"+account.username}}
+                            </span>
+                        </span>
+                        <span class="p-1">{{account.followerCount}} Followers</span>
+                    </div>
+                    <h4 class="p-1 italic text-sm text-gray-500">Account started: {{account.createdAt}}</h4>
+                    <p class="p-1 rounded-lg bg-gray-50 text-sm italic text-[#1D2D44]">{{account.bio ?? "This user hasn't updated their bio yet!"}}</p>
+                </div>
+                <div class="self-end">
+                    <ng-container *ngIf="account.id != (user$ | async)?.account!.id">
+                        <app-follow [account]="account" />
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="w-full">
+            <div class="p-4 rounded-2xl shadow" *ngIf="account.contentCount && account.contentCount > 0; else noContentFound">
+
+            </div>
+            <ng-template #noContentFound>
+                <h1 class="text-center text-gray-900 lg:text-2xl md:text-xl sm:text-md italic">
+                    User hasn't posted any content yet!
+                </h1>
+            </ng-template>
+        </div>
+    </div>
+</section>

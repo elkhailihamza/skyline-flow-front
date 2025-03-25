@@ -1,8 +1,8 @@
-import { Component, DestroyRef, OnDestroy, signal } from '@angular/core';
+import { Component, DestroyRef, OnDestroy, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LayoutService } from '../../layout.service';
 import { Search } from '../../interface/navbar';
-import { map, tap } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 import { User, UserShortDetails } from '../../../auth/interface/user';
 import { Store } from '@ngrx/store';
 import { selectUser, selectUserIsLoggedIn } from '../../../state/selectors/auth.selectors';
@@ -20,7 +20,8 @@ export class MainNavbarComponent implements OnDestroy {
   hasInput = signal(false);
   isAuthenticated: boolean = false;
   userInfo: UserShortDetails | null = null;
-  userInfoLoading: boolean = false;
+  navbarLoad: WritableSignal<boolean> = signal(true);
+  userInfoLoad: WritableSignal<boolean> = signal(true);
   imageUrl: string | null = null;
 
   constructor(private formBuilder: FormBuilder, private layoutService: LayoutService, private store: Store, private imageService: ImageHandlerService,private destoryRef: DestroyRef) { 
@@ -38,7 +39,9 @@ export class MainNavbarComponent implements OnDestroy {
       takeUntilDestroyed(this.destoryRef),
       tap(data => {
         this.isAuthenticated = data;
-      })
+        this.navbarLoad.set(false);
+      }),
+      finalize(() => this.navbarLoad.set(false))
     ).subscribe();
   }
 
@@ -68,47 +71,34 @@ export class MainNavbarComponent implements OnDestroy {
   }
 
   loadUserInfo() {
-    this.userInfoLoading = true;
     this.store.select(selectUser).pipe(
-      takeUntilDestroyed(this.destoryRef),
-      map((user: User | null) => {
-        if (!user) {return}
+      tap((user: User | null) => {
+        if (!user) return;
+  
         this.userInfo = {
           id: user.id,
           name: user.name,
           surname: user.surname,
           email: user.email,
-          accountPublicInfo: null
+          accountPublicInfo: user.account?.username ? {
+            id: user.account.id!,
+            createdAt: user.account.createdAt!,
+            profilePicture: user.account.profilePicture!,
+            username: user.account.username!
+          } : null
+        };
+  
+        if (this.userInfo.accountPublicInfo?.profilePicture) {
+          this.imageService.loadImage({ image: null, imageName: this.userInfo.accountPublicInfo.profilePicture })
+            .pipe(takeUntilDestroyed(this.destoryRef))
+            .subscribe(pfp => this.imageUrl = pfp);
         }
-        if (user.account) {
-          this.userInfo = {
-            ...this.userInfo,
-            accountPublicInfo: {
-              id: user.account.id,
-              createdAt: user.account.createdAt,
-              profilePicture: user.account.profilePicture,
-              username: user.account.username
-            }
-          }
-        }
-      })
+        this.userInfoLoad.set(false);
+      }),
+      finalize(() => this.userInfoLoad.set(false))
     ).subscribe();
-
-    if (this.userInfo?.accountPublicInfo?.profilePicture != null) {
-      this.imageService.loadImage({ image: null, imageName: this.userInfo?.accountPublicInfo?.profilePicture}).pipe(
-        takeUntilDestroyed(this.destoryRef),
-        tap(pfp => {
-          this.imageUrl = pfp;
-          console.log(pfp)
-        })
-      ).subscribe(() => {
-        this.userInfoLoading = false;
-      });
-    } else {
-      this.userInfoLoading = false;
-    }
-    this.userInfoLoading = false;
   }
+  
 
   ngOnDestroy(): void {
     if (this.imageUrl) {
